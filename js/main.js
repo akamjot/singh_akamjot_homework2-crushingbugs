@@ -14,22 +14,18 @@ let theButtons = document.querySelectorAll("#buttonHolder img"),
 	// store the dragged piece in a global variable
 	// because we need it in the handleDrop function
 	draggedPiece;
-    
-function findDropZoneContainingPiece(piece) {
-        for (let dropZone of dropZones) {
-            if (dropZone.contains(piece)) {
-                return dropZone;
-            }
-        }
-        return null;
-    }
+
+function resetBoard() {
+		puzzlePieces.forEach(piece => {
+		piece.parentNode.removeChild(piece);
+		document.getElementById("puzzlePieces").appendChild(piece);
+		});	
+	}
+
+	document.getElementById("resetBut").addEventListener("click", resetBoard);
     
 
-function resetPuzzlePieces() {
-        puzzlePieces.forEach(piece => {
-            puzzleBoard.appendChild(piece);
-        });
-    }
+
 // step 3
 // functionality always goes in the middle -> how do we want
 // the app to behave?
@@ -38,9 +34,17 @@ function changeBGImage() {
 	// inside the braces - run that little bit of code. In this case it's just pulling the ID of the
 	// button we clicked on and putting it at the end of the image name (0, 1, 2, 3)
 	// and updating the background-image style of the puzzle board element.
-    resetPuzzlePieces();
+
 	// bug fix #2 should go here. it's at most 3 lines of JS code.
 	puzzleBoard.style.backgroundImage = `url(images/backGround${this.id}.jpg)`;
+	changePieces(this.id)
+}
+
+function changePieces(id){
+	document.getElementById("topleft").src="images/topLeft"+ id +".jpg";
+	document.getElementById("topright").src="images/topRight"+ id +".jpg";
+	document.getElementById("bottomleft").src="images/bottomLeft"+ id +".jpg";
+	document.getElementById("bottomright").src="images/bottomRight"+ id +".jpg";
 }
 
 
@@ -58,28 +62,18 @@ function handleDragOver(e) {
 }
 
 function handleDrop(e) { 
+	console.log("drag event",e)
 	e.preventDefault();
 	console.log('dropped something on me');
 
-    let currentDropZone = findDropZoneContainingPiece(draggedPiece);
-    if (currentDropZone) {
-        currentDropZone.removeChild(draggedPiece);
-    }
 	// bug fix #1 should go here, and it's at most 3 lines of JS code
-    if (!e.currentTarget.classList.contains('drop-zone')) {
-    } 
-
-    else {
-
-        if (draggedPiece) {
-            e.currentTarget.appendChild(draggedPiece);
-            draggedPiece = null;
-    }
+    if (this.childElementCount == 0){
 	// this line is going to move the dragged piece from the left side of the board
 	// into whatever drop zone we choose. appendChild means "add element to the container"
 	this.appendChild(draggedPiece);
+	}
 }
-}
+
 // step 2
 // event handling always goes at the bottom => 
 // how do we want users to interact with our app
